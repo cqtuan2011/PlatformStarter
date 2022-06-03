@@ -6,6 +6,7 @@ public class CharacterMovement : MonoBehaviour
 {
     private Animator anim;
     private Rigidbody2D rb;
+    public CharacterHealth health;
 
     private float moveDir;
     private bool canJump;
@@ -69,7 +70,6 @@ public class CharacterMovement : MonoBehaviour
     private void CheckSurroundings()
     {
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, radius, groundLayer);
-
     }
 
     private void ApplyMovement()
@@ -83,7 +83,7 @@ public class CharacterMovement : MonoBehaviour
         {
             isJumping = true;
 
-            Invoke("TriggerJump", 0.2f);
+            rb.velocity = new Vector2(rb.velocity.x, jumpForce);
         }
         else
         {
@@ -95,7 +95,15 @@ public class CharacterMovement : MonoBehaviour
     {
         anim.SetFloat("Walk", Mathf.Abs(moveDir));
         anim.SetBool("IsRunning", isRunning);
-        anim.SetBool("IsJumping", isJumping);
+        //anim.SetBool("IsJumping", isJumping);
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("Trap"))
+        {
+            health.TakeDamage(5);
+        }
     }
 
     private void CheckMovementDirection()
@@ -119,10 +127,5 @@ public class CharacterMovement : MonoBehaviour
     private void OnDrawGizmos()
     {
         Gizmos.DrawWireSphere(groundCheck.position, radius);
-    }
-
-    private void TriggerJump()
-    {
-        rb.velocity = new Vector2(rb.velocity.x, jumpForce);
     }
 }

@@ -12,6 +12,7 @@ public class WaypointFollower : MonoBehaviour
     private Enemy enemy;
 
     private int currentWaypointIndex = 1;
+    private bool isWalking;
 
     private void Awake()
     {
@@ -46,7 +47,13 @@ public class WaypointFollower : MonoBehaviour
             }
         }
         transform.position = Vector2.MoveTowards(transform.position, wayPoints[currentWaypointIndex].transform.position, Time.deltaTime * movingSpeed);
+        isWalking = true;
 
         anim.Play("Rogue_walk_01");
+    }
+
+    private void UpdateAnimation()
+    {
+        anim.SetBool("isWalking", isWalking);
     }
 }
